@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Everyday Cooks</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="nav">
+    <a href="/" class="nav__brand">Everyday Cooks</a>
+    <div class="nav__links">
+      <% if (typeof session !== 'undefined' && session.userId) { %>
+      <a href="/recipes/new" class="nav__link">+ Create</a>
+      <a href="/recipes" class="nav__link">Recipes</a>
+      <a href="/schedule" class="nav__link">Schedule</a>
+      <a href="/profile/<%= session.userId %>" class="nav__link">My Profile</a>
+      <a href="/auth/dashboard" class="nav__link nav__link--active">Dashboard</a>
+      <a href="/auth/logout" class="nav__link">Logout</a>
+      <% } %>
+    </div>
+  </nav>
+
+  <div class="container container--xl">
+
+    <!-- EDITORIAL WELCOME -->
+    <div class="animate-fade-up">
+      <div>
+        <h1 class="dash-editorial__greeting">
+          Good to see you, <em><%= session.username %></em>.
+        </h1>
+        <p class="dash-editorial__sub">Your kitchen, your canvas. Share a new dish, browse what the community is cooking, or revisit your creations.</p>
+        <div class="dash-editorial__cta">
+          <a href="/recipes/new" class="btn btn--primary">+ New Recipe</a>
+          <a href="/recipes" class="btn btn--ghost">Browse All</a>
+        </div>
+      </div>
+
+    <br>
+    <!-- QUICK LINKS (editorial cards with numbers) -->
+    <div class="quick-links--editorial" >
+      <div class="quick-link-card--editorial animate-fade-up" style="transition-delay:0ms;">
+        <span class="card-number">01</span>
+        <h3>My Recipes</h3>
+        <p>View, edit, and manage all the dishes you've shared with the community.</p>
+        <a href="/recipes/my-recipes/<%= session.userId %>" class="card-cta">View my recipes →</a>
+      </div>
+
+      <div class="quick-link-card--editorial animate-fade-up" style="transition-delay:80ms;">
+        <span class="card-number">02</span>
+        <h3>Browse</h3>
+        <p>Discover new dishes from the community and get inspired by what others are making.</p>
+        <a href="/recipes" class="card-cta">Explore all recipes →</a>
+      </div>
+
+      <div class="quick-link-card--editorial animate-fade-up" style="transition-delay:160ms;">
+        <span class="card-number">03</span>
+        <h3>Create</h3>
+        <p>Have a recipe to share? Add it here and let the whole community enjoy it.</p>
+        <a href="/recipes/new" class="card-cta">Start creating →</a>
+      </div>
+
+      <div class="quick-link-card--editorial animate-fade-up" style="transition-delay:160ms;">
+        <span class="card-number">04</span>
+        <h3>Favourites</h3>
+        <p>Browse your favourite recipes.</p>
+        <a href="/favourites/my-favourites" class="card-cta">My favourites →</a>
+      </div>
+
+      <div class="quick-link-card--editorial animate-fade-up" style="transition-delay:160ms;">
+        <span class="card-number">05</span>
+        <h3>Grocery Shopping List</h3>
+        <p>Manage your grocery shopping list with ease.</p>
+        <a href="/groceries" class="card-cta">View grocery list →</a>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schedule — Everyday Cooks</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="/" class="nav__brand">Everyday Cooks</a>
+    <div class="nav__links">
+       <% if (typeof session !== 'undefined' && session.userId) { %>
+        <a href="/recipes/new" class="nav__link">+ Create</a>
+        <a href="/recipes" class="nav__link">Recipes</a>
+        <a href="/schedule" class="nav__link nav__link--active">Schedule</a>
+        <a href="/profile/<%= session.userId %>" class="nav__link">My Profile</a>
+        <a href="/auth/dashboard" class="nav__link">Dashboard</a>
+        <a href="/auth/logout" class="nav__link">Logout</a>
+      <% } %>
+    </div>
+  </nav>
+
+  <div class="container container--xl">
+
+    <% if (errors && errors.length > 0) { %>
+      <div class="card card--space" style="margin-bottom: 16px; border-color: #e53e3e; background: #fff5f5;">
+        <% errors.forEach(error => { %>
+          <p style="margin: 0; color: #c53030;"><%= error %></p>
+        <% }); %>
+      </div>
+    <% } %>
+
+    <!-- MACRO BAR -->
+    <div id="macrobar-region">
+      <%- include('./_macrobar', { dailyTotals: log.dailyTotals, calorieGoal: calorieGoal }) %>
+    </div>
+
+    <!-- SUGGESTIONS -->
+    <%- include('./_suggestions', { suggestions: suggestions || [], remainingCalories: remainingCalories || 0, dateString }) %>
+
+    <!-- DATE NAVIGATOR -->
+    <div class="date-nav">
+      <a href="/schedule/<%= prevStr %>" class="date-nav__arrow" aria-label="Previous day">&#8249;</a>
+      <span class="date-nav__label"><%= displayLabel %></span>
+      <a href="/schedule/<%= nextStr %>" class="date-nav__arrow" aria-label="Next day">&#8250;</a>
+    </div>
+
+    <!-- TIMELINE -->
+    <div id="timeline-region">
+      <% mealOrder.forEach(mealType => { %>
+        <div class="meal-group" data-meal="<%= mealType %>">
+          <div class="meal-group__header">
+            <span class="meal-group__title"><%= mealType %></span>
+            <% if (groupedEntries[mealType].entries.length > 0) { %>
+              <span class="meal-group__cal"><%= Math.round(groupedEntries[mealType].calories) %> kcal</span>
+            <% } %>
+          </div>
+
+          <div class="meal-group__entries">
+            <% groupedEntries[mealType].entries.forEach(entry => { %>
+              <%- include('./_entry', { entry, dateString }) %>
+            <% }); %>
+          </div>
+
+          <!-- Add food form -->
+          <div class="add-food-row" data-meal="<%= mealType %>">
+            <form method="POST" action="/schedule/search-food" class="add-food-form" style="display: block;">
+              <input
+                type="text"
+                name="query"
+                class="input input--sm"
+                placeholder="Search and add food…"
+                required
+                style="display: block; width: 100%; margin-bottom: 8px;"
+              >
+              <input type="hidden" name="mealType" value="<%= mealType %>">
+              <input type="hidden" name="dateString" value="<%= dateString %>">
+              <button type="submit" class="btn btn--ghost btn--sm">+ Add to <%= mealType %></button>
+            </form>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+
+  </div>
+</body>
+</html>

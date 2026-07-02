@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= recipe.title %> — Everyday Cooks</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <nav class="nav">
+    <a href="/" class="nav__brand">Everyday Cooks</a>
+    <div class="nav__links">
+      <% if (typeof session !== 'undefined' && session.userId) { %>
+      <a href="/recipes/new" class="nav__link nav__link--active">+ Create</a>
+      <a href="/recipes" class="nav__link">Recipes</a>
+      <a href="/schedule" class="nav__link">Schedule</a>
+      <a href="/profile/<%= session.userId %>" class="nav__link">My Profile</a>
+      <a href="/auth/dashboard" class="nav__link">Dashboard</a>
+      <a href="/auth/logout" class="nav__link">Logout</a>
+      <% } else { %>
+      <a href="/auth/login" class="nav__link">Login</a>
+      <% } %>
+    </div>
+  </nav>
+
+  <div class="container container--lg">
+    <% if(typeof session !== 'undefined' && session.userId && typeof from !== 'undefined' && from == "favourites") { %>
+    <a href="/favourites/my-favourites" class="back-link">← Back to My Favourites</a>
+    <% } else { %>
+
+    <a href="javascript:history.back()" class="back-link">← Back to Recipes</a>
+    <% } %>
+
+    <div class="recipe-hero">
+      <% if (recipe.thumbnail) { %>
+      <img class="recipe-hero__img" src="<%= recipe.thumbnail %>" alt="<%= recipe.title %>">
+      <% } %>
+
+      <div class="recipe-hero__badges">
+        <span class="badge badge--source">Stock Recipe — TheMealDB</span>
+        <% if (recipe.category) { %>
+        <span class="badge badge--category"><%= recipe.category %></span>
+        <% } %>
+        <% if (recipe.area) { %>
+        <span class="badge badge--category"><%= recipe.area %> cuisine</span>
+        <% } %>
+      </div>
+
+      <h1><%= recipe.title %></h1>
+    </div>
+
+    <div class="about-card">
+      <h3>About this recipe</h3>
+      <p>A <%= recipe.area ? recipe.area + ' ' : '' %>classic<%= recipe.category ? ' from the ' + recipe.category + ' category' : '' %>.</p>
+      <div style="margin-top: var(--sp-5);">
+        <form method="POST" action="/recipes/mealdb/<%= recipe.id %>/summarize" style="display:inline;">
+          <button class="btn btn--ghost btn--sm" type="submit">Summary</button>
+        </form>
+      </div>
+      <% if (typeof summary !== 'undefined' && summary) { %>
+      <div style="margin-top:var(--sp-4); padding:var(--sp-4); background:var(--color-bg-light); border:1px solid var(--color-border); border-radius:var(--radius-md);">
+        <p style="font-size:var(--text-xs); font-weight:600; color:var(--color-primary-dark); letter-spacing:1px; text-transform:uppercase; margin-bottom:var(--sp-2);">AI Summary</p>
+        <p style="font-size:var(--text-sm); color:var(--color-text-gray); line-height:1.7;"><%= summary %></p>
+      </div>
+      <% } %>
+    </div>
+
+    <div class="recipe-content-grid">
+      <div class="recipe-section">
+        <h2>Ingredients</h2>
+        <ul class="ingredients-list">
+          <% recipe.ingredients.forEach(ingredient => { %>
+          <li><%= ingredient %></li>
+          <% }); %>
+        </ul>
+      </div>
+
+      <div class="recipe-section">
+        <h2>Instructions</h2>
+        <div class="instructions"><%= recipe.instructions %></div>
+      </div>
+    </div>
+  </div>
+
+
+</body>
+
+</html>

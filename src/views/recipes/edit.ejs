@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit <%= recipe.title %> — Everyday Cooks</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="nav">
+    <a href="/" class="nav__brand">Everyday Cooks</a>
+    <div class="nav__links">
+     <% if (typeof session !== 'undefined' && session.userId) { %>
+       <a href="/recipes/new" class="nav__link">+ Create</a>
+        <a href="/recipes" class="nav__link">Recipes</a>
+        <a href="/schedule" class="nav__link">Schedule</a>
+        <a href="/profile/<%= session.userId %>" class="nav__link">My Profile</a>
+        <a href="/auth/dashboard" class="nav__link">Dashboard</a>
+        <a href="/auth/logout" class="nav__link">Logout</a>
+      <% } %>
+    </div>
+  </nav>
+
+  <div class="container container--md">
+    <div class="form-card">
+      <div class="form-card__header">
+        <h1>Edit Recipe</h1>
+        <p class="text-muted text-sm mt-2">Update your recipe details</p>
+      </div>
+
+      <form method="POST" action="/recipes/<%= recipe._id %>/update">
+            <div class="form-group">
+          <label for="image">Reference Image</label>
+          <input type="text" id="image" name="image" value="<%= recipe.image %>" required>
+        </div>
+        <div class="form-group">
+          <label for="title">Recipe Title</label>
+          <input type="text" id="title" name="title" value="<%= recipe.title %>" required>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea id="description" name="description" required><%= recipe.description %></textarea>
+        </div>
+
+        <div class="two-column">
+          <div class="form-group">
+            <label for="cookingTime">Cooking Time (minutes)</label>
+            <input type="number" id="cookingTime" name="cookingTime" min="1" value="<%= recipe.cookingTime %>" required>
+          </div>
+          <div class="form-group">
+            <label for="servings">Servings</label>
+            <input type="number" id="servings" name="servings" min="1" value="<%= recipe.servings %>" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Category <span class="text-subtle">(select up to 3)</span></label>
+          <% const cats = ['Appetisers/Sides','Breakfast','Lunch','Dinner','Dessert','Healthy','Vegan','20 Minutes or less']; %>
+          <% const catVals = ['Appetisers','Breakfast','Lunch','Dinner','Dessert','Healthy','Vegan','20 Minutes']; %>
+          <% catVals.forEach((val, i) => { %>
+            <label class="check-group">
+              <input type="checkbox" name="category" value="<%= val %>"
+                <%= recipe.category && recipe.category.includes(val) ? 'checked' : '' %>>
+              <%= cats[i] %>
+            </label>
+          <% }) %>
+        </div>
+
+        <div class="form-group">
+          <label for="ingredients">Ingredients <span class="text-subtle">(Separate using semicolon ;)</span></label>
+          <textarea id="ingredients" name="ingredients" required><%= recipe.ingredients.join('; ') %></textarea>
+          <div class="form-hint">Semicolon-separated list</div>
+        </div>
+
+        <div class="form-group">
+          <label for="instructions">Instructions</label>
+          <textarea id="instructions" name="instructions" required><%= recipe.instructions %></textarea>
+        </div>
+
+        <div class="button-group">
+          <a href="/recipes/<%= recipe._id %>?from=my-recipes" class="btn btn--secondary">Cancel</a>
+          <button type="submit" class="btn btn--primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
